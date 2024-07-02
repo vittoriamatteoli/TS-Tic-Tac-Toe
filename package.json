@@ -1,0 +1,15 @@
+{
+  "name": "ts-tic-tac-toe",
+  "version": "1.0.0",
+  "description": "This project is a TypeScript implementation of the classic TicTacToe game. The goal is to provide a functional and interactive game where two players (X and O) take turns marking spaces in a 3x3 grid. The game ends when one player has three marks in a row (vertically, horizontally, or diagonally) or when all spaces on the board are filled without a winner.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  }
+}
