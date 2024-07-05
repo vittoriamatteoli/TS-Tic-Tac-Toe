@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./game.css";
 
 export const Game = () => {
   const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
