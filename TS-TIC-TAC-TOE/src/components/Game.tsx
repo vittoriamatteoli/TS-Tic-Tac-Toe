@@ -5,10 +5,18 @@ export const Game = () => {
   const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
   const [board, setBoard] = useState<Board>(Array(9).fill(null));
   const [winner, setWinner] = useState<Player | null>(null);
+  const [score, setScore] = useState<Score>([
+    { player: "X", score: 0 },
+    { player: "O", score: 0 },
+  ]);
 
   type Player = "O" | "X";
   type Cell = Player | null;
   type Board = Cell[];
+  type Score = {
+    player: Player;
+    score: number;
+  }[];
 
   const winningCombos = [
     [0, 1, 2],
@@ -38,6 +46,13 @@ export const Game = () => {
       const newWinner = checkWinner(newBoard);
       if (newWinner) {
         setWinner(newWinner);
+        setScore((prevScore) =>
+          prevScore.map((playerScore) =>
+            playerScore.player === newWinner
+              ? { ...playerScore, score: playerScore.score + 1 }
+              : playerScore
+          )
+        );
         setTimeout(restartGame, 5000);
       } else {
         setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
@@ -62,16 +77,37 @@ export const Game = () => {
     setCurrentPlayer("X");
     setWinner(null);
   };
+  const quitGame = () => {
+    restartGame();
+    setScore([
+      { player: "X", score: 0 },
+      { player: "O", score: 0 },
+    ]);
+  };
 
   return (
-    <div>
+    <>
       <div className="game-board">
+        <div className="rowPlayer">
+          {score.map((playerScore) => (
+            <div
+              key={playerScore.player}
+              className={`scoreCell ${
+                playerScore.player === "X" ? "scoreCellX" : "scoreCellO"
+              }`}
+            >
+              <p>Player {playerScore.player}</p>
+              <span>{playerScore.score}</span>
+            </div>
+          ))}
+        </div>
         {Array(3)
           .fill(null)
           .map((_, rowIndex) => renderRow(rowIndex))}
       </div>
       {winner ? <div className="winner">Winner: {winner}</div> : null}
       <button onClick={restartGame}>Restart Game</button>
-    </div>
+      <button onClick={quitGame}>Quit Game</button>
+    </>
   );
 };
