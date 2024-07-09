@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./game.css";
 
 export const Game = () => {
+  // Defining the state variables
   const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
   const [board, setBoard] = useState<Board>(Array(9).fill(null));
   const [winner, setWinner] = useState<Player | null>(null);
@@ -9,7 +10,7 @@ export const Game = () => {
     { player: "X", score: 0 },
     { player: "O", score: 0 },
   ]);
-
+  // Defining types for the variables
   type Player = "O" | "X";
   type Cell = Player | null;
   type Board = Cell[];
@@ -17,7 +18,7 @@ export const Game = () => {
     player: Player;
     score: number;
   }[];
-
+  // Winning combinations for the game
   const winningCombos = [
     [0, 1, 2],
     [3, 4, 5],
@@ -28,7 +29,7 @@ export const Game = () => {
     [0, 4, 8],
     [2, 4, 6],
   ];
-
+  // Function to check for a winner
   const checkWinner = (board: Board): Player | null => {
     for (const [a, b, c] of winningCombos) {
       if (board[a] && board[a] === board[b] && board[a] === board[c]) {
@@ -37,13 +38,18 @@ export const Game = () => {
     }
     return null;
   };
-
+  // function to check if the board is full but
+  const isBoardFull = (board: Board): boolean => {
+    return board.every((cell) => cell !== null);
+  };
+  // Function to handle a cell click
   const handleClick = (index: number) => {
     if (board[index] === null) {
       const newBoard = board.slice();
       newBoard[index] = currentPlayer;
       setBoard(newBoard);
       const newWinner = checkWinner(newBoard);
+
       if (newWinner) {
         setWinner(newWinner);
         setScore((prevScore) =>
@@ -53,18 +59,25 @@ export const Game = () => {
               : playerScore
           )
         );
-        setTimeout(restartGame, 5000);
+        setTimeout(restartGame, 500);
+        //restart game if board is full and no winner was found
+      } else if (isBoardFull(newBoard)) {
+        setTimeout(restartGame, 500);
       } else {
         setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
       }
     }
   };
+  // Function to render a cell
   const renderCell = (index: number) => (
-    <div className="cell" onClick={() => handleClick(index)}>
+    <div
+      className={`cell ${board[index] === "X" ? "cellX" : "cellO"}`}
+      onClick={() => handleClick(index)}
+    >
       {board[index]}
     </div>
   );
-
+  // Function to render a row
   const renderRow = (rowIndex: number) => (
     <div className="row">
       {Array(3)
@@ -72,11 +85,13 @@ export const Game = () => {
         .map((_, cellIndex) => renderCell(rowIndex * 3 + cellIndex))}
     </div>
   );
+  // Function to restart the game
   const restartGame = () => {
     setBoard(Array(9).fill(null));
     setCurrentPlayer("X");
     setWinner(null);
   };
+  // Function to quit the game
   const quitGame = () => {
     restartGame();
     setScore([
